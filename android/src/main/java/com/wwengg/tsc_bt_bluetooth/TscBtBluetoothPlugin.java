@@ -38,9 +38,16 @@ public class TscBtBluetoothPlugin implements FlutterPlugin, MethodCallHandler {
         result.success("Android " + android.os.Build.VERSION.RELEASE);
         break;
       case "openPort":
-        String macAddress = call.argument("macAddress");
-        res = TscDll.openport(macAddress);
-        result.success(res);
+        String address = call.argument("address");
+        try {
+          System.out.println(address);
+          res = TscDll.openport(address);
+          System.out.println(res);
+          result.success(res);
+        }
+        catch (Exception e){
+          result.error(e.toString(),null,null);
+        }
         break;
       case "closePort":
         res = TscDll.closeport();

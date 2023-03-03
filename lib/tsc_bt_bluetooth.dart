@@ -12,27 +12,29 @@ class TscBtBluetooth {
     return version;
   }
 
-  Future<String> openPort(String address) async {
+  static Future<String> openPort({
+    String address
+  }) async {
     final String res = await _channel.invokeMethod('openPort',{"address": address});
     return res;
   }
 
-  Future<String> closePort() async {
+  static Future<String> closePort() async {
     final String res = await _channel.invokeMethod('closePort');
     return res;
   }
 
-  Future<String> setup(int width,int height,int speed,int density,int distance,int offset) async {
+  static Future<String> setup(int width,int height,int speed,int density,int distance,int offset) async {
     final String res = await _channel.invokeMethod('setup',{"width":width,"height":height,"speed":speed,"density":density,"distance":distance,"offset":offset});
     return res;
   }
 
-  Future<String> clearBuffer() async {
+  static Future<String> clearBuffer() async {
     final String res = await _channel.invokeMethod('clearBuffer');
     return res;
   }
 
-  Future<String> printLabel(int num) async {
+  static Future<String> printLabel(int num) async {
     final String res = await _channel.invokeMethod('printLabel',{"num":num});
     return res;
   }
@@ -40,11 +42,11 @@ class TscBtBluetooth {
     final String res = await _channel.invokeMethod('printerfont',{"x":x,"y":y,"size":size,"content":content});
     return res;
   }
-  Future<String> sendBitmapResize(int x,int y,String path,int width,int height) async {
+  static Future<String> sendBitmapResize(int x,int y,String path,int width,int height) async {
     final String res = await _channel.invokeMethod('sendBitmapResize',{"x":x,"y":y,"path":path,"width":width,"height":height});
     return res;
   }
-  Future<String> sendCommand(String command) async {
+  static Future<String> sendCommand(String command) async {
     final String res = await _channel.invokeMethod('sendCommand',{"command":command});
     return res;
   }
