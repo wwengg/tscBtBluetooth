@@ -103,8 +103,8 @@ public class TscBtBluetoothPlugin implements FlutterPlugin, MethodCallHandler {
         } catch (NoSuchFieldException var28) {
           var28.printStackTrace();
         }
-
-        original_bitmap = BitmapFactory.decodeFile(path, options);
+        URL url = new URL(path);
+        original_bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream(), options);
         TscDll.sendbitmap_resize(x2,y2,original_bitmap,width2,height2);
         result.success("1");
       case "sendCommand":
