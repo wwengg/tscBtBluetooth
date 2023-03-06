@@ -6,13 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:tsc_bt_bluetooth/tsc_bt_bluetooth.dart';
 
-class ChatPage extends StatefulWidget {
+class PrintPage extends StatefulWidget {
   final BluetoothDevice server;
 
-  const ChatPage({this.server});
+  const PrintPage({this.server});
 
   @override
-  _ChatPage createState() => new _ChatPage();
+  _PrintPage createState() => new _PrintPage();
 }
 
 class _Message {
@@ -22,7 +22,7 @@ class _Message {
   _Message(this.whom, this.text);
 }
 
-class _ChatPage extends State<ChatPage> {
+class _PrintPage extends State<PrintPage> {
   static final clientID = 0;
   BluetoothConnection connection;
 
@@ -41,37 +41,9 @@ class _ChatPage extends State<ChatPage> {
 
 //tsc
   @override
-  Future<void> initState() {
+  void initState() {
     super.initState();
-
-    BluetoothConnection.toAddress(widget.server.address).then((_connection) {
-      print('Connected to the device');
-      connection = _connection;
-      setState(() {
-        isConnecting = false;
-        isDisconnecting = false;
-      });
-
-      connection.input.listen(_onDataReceived).onDone(() {
-        // Example: Detect which side closed the connection
-        // There should be `isDisconnecting` flag to show are we are (locally)
-        // in middle of disconnecting process, should be set before calling
-        // `dispose`, `finish` or `close`, which all causes to disconnect.
-        // If we except the disconnection, `onDone` should be fired as result.
-        // If we didn't except this (no flag set), it means closing by remote.
-        if (isDisconnecting) {
-          print('Disconnecting locally!');
-        } else {
-          print('Disconnected remotely!');
-        }
-        if (this.mounted) {
-          setState(() {});
-        }
-      });
-    }).catchError((error) {
-      print('Cannot connect, exception occured');
-      print(error);
-    });
+    openPort();
   }
 
   Future<void> openPort() async {
@@ -86,15 +58,20 @@ class _ChatPage extends State<ChatPage> {
     }
     print(printMessage);
   }
+  Future<void> closePort() async {
+    String result;
+    try {
+      result = await TscBtBluetooth.closePort();
+
+    } on PlatformException {
+      result = 'Failed to closePort with this printer. ';
+    }
+    print(result);
+  }
+
   @override
   void dispose() {
-    // Avoid memory leak (`setState` after dispose) and disconnect
-    if (isConnected) {
-      isDisconnecting = true;
-      connection.dispose();
-      connection = null;
-    }
-
+    closePort();
     super.dispose();
   }
 
@@ -127,7 +104,7 @@ class _ChatPage extends State<ChatPage> {
     return Scaffold(
       appBar: AppBar(
           title: (isConnecting
-              ? Text('Connecting chat to ' + widget.server.name + '...')
+              ? Text('Connecting to ' + widget.server.name + '...')
               : isConnected
                   ? Text('Live chat with ' + widget.server.name)
                   : Text('Chat log with ' + widget.server.name))),

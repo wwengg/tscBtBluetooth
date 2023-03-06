@@ -1,8 +1,8 @@
 name: tsc_bt_bluetooth
 description: A new Flutter plugin.
 version: 0.0.1
-author:
-homepage:
+author: wwengg
+homepage: https://github.com/wwengg
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
