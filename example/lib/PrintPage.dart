@@ -50,7 +50,7 @@ class _PrintPage extends State<PrintPage> {
     String printMessage;
     try {
       printMessage = await TscBtBluetooth.openPort(
-        address: widget.server.address,
+        widget.server.address,
       );
 
     } on PlatformException {
