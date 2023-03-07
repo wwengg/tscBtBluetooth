@@ -2,6 +2,8 @@ package com.wwengg.tsc_bt_bluetooth;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Base64;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -12,6 +14,11 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /** TscBtBluetoothPlugin */
 public class TscBtBluetoothPlugin implements FlutterPlugin, MethodCallHandler {
@@ -87,7 +94,7 @@ public class TscBtBluetoothPlugin implements FlutterPlugin, MethodCallHandler {
         String path = call.argument("path");
         int width2 = call.argument("width");
         int height2 = call.argument("height");
-        Bitmap original_bitmap = null;
+//        Bitmap original_bitmap = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPurgeable = true;
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -103,13 +110,29 @@ public class TscBtBluetoothPlugin implements FlutterPlugin, MethodCallHandler {
         } catch (NoSuchFieldException var28) {
           var28.printStackTrace();
         }
-        URL url = new URL(path);
-        original_bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream(), options);
-        TscDll.sendbitmap_resize(x2,y2,original_bitmap,width2,height2);
+//        InputStream inputStream;
+//        try {
+//          inputStream = new java.net.URL(path).openStream();
+//          original_bitmap = BitmapFactory.decodeStream(inputStream);
+//        } catch (IOException e) {
+//          e.printStackTrace();
+//        }
+        byte[] bytes = Base64.decode(path,Base64.DEFAULT);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes,0,bytes.length);
+        Log.e("sendBitmapResize", path);
+        TscDll.sendbitmap_resize(x2,y2,bitmap,width2,height2);
         result.success("1");
-      case "sendCommand":
+      case "sendCommandUTF8":
         String command = call.argument("command");
-        res = TscDll.sendcommand(command);
+        res = TscDll.sendcommandUTF8(command);
+        result.success(res);
+      case "sendCommand":
+        String command2 = call.argument("command");
+        res = TscDll.sendcommand(command2);
+        result.success(res);
+      case "sendCommandBIG5":
+        String command3 = call.argument("command");
+        res = TscDll.sendcommandBig5(command3);
         result.success(res);
       default:
         result.notImplemented();

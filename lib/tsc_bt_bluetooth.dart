@@ -49,4 +49,12 @@ class TscBtBluetooth {
     final String? res = await _channel.invokeMethod('sendCommand',{"command":command});
     return res;
   }
+  static Future<String?> sendCommandUTF8(String command) async {
+    final String? res = await _channel.invokeMethod('sendCommandUTF8',{"command":command});
+    return res;
+  }
+  static Future<String?> sendCommandBIG5(String command) async {
+    final String? res = await _channel.invokeMethod('sendCommandBIG5',{"command":command});
+    return res;
+  }
 }
